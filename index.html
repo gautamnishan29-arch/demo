@@ -1,79 +1,821 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bakery Delight</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>Anuj KC | Portfolio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #050607;
+      --card: #0e1013;
+      --border: #1f2228;
+      --cyan: #00d2ff;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+    }
+
+    /* SMOOTH SCROLLING */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    /* PARTICLE BACKGROUND */
+    #particleCanvas {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* REVEAL ANIMATION */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px) scale(.95);
+      transition: .6s cubic-bezier(.16, 1, .3, 1);
+      visibility: hidden;
+    }
+
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      visibility: visible;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 0;
+    }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      margin-left: 24px;
+      transition: .3s;
+    }
+
+    nav a:hover {
+      color: rgb(0, 0, 0);
+    }
+
+    .btn {
+      background: rgb(0, 170, 255);
+      color: black;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    /* HERO */
+    .hero {
+      text-align: center;
+      margin-top: 80px;
+    }
+
+    .btn:hover {
+      color: white;
+
+
+    }
+
+    .avatar {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      margin: auto;
+      margin-bottom: 20px;
+      overflow: hidden;
+      border: 2px solid var(--cyan);
+      box-shadow: 0 0 30px rgba(0, 210, 255, 0.35);
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 330%;
+      object-fit: cover;
+    }
+
+    .hero h1 {
+      font-size: 48px;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .hero p {
+      color: var(--muted);
+      max-width: 600px;
+      margin: 14px auto;
+      font-size: 18px;
+    }
+
+    .hero-buttons {
+      margin-top: 26px;
+    }
+
+    .hero-buttons button {
+      padding: 12px 22px;
+      border-radius: 22px;
+      border: none;
+      margin: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: .3s;
+    }
+
+    .primary {
+      background: var(--cyan);
+      color: black;
+    }
+
+    .primary:hover {
+      background: #fff;
+      transform: scale(1.05);
+    }
+
+    .secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: white;
+    }
+
+    .secondary:hover {
+      background: var(--border);
+    }
+
+    /* SECTIONS */
+    section {
+      margin-top: 120px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      color: var(--cyan);
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+    }
+
+    /* SOFTWARE GRID - SNAPPIER ANIMATION */
+    .grid {
+      display: flex;
+      gap: 12px;
+      height: 240px;
+      align-items: stretch;
+    }
+
+    .software-card {
+      flex: 1;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 15px;
+      /* Faster transition: 0.4s instead of 0.6s */
+      transition: all 0.4s cubic-bezier(.25, .8, .25, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      justify-content: center;
+    }
+
+    .software-card:hover {
+      flex: 2.2;
+      /* Slightly less aggressive expansion */
+      border-color: var(--cyan);
+      background: #111418;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+      z-index: 10;
+    }
+
+    /* PLUGIN INITIALS STYLE */
+    .plugin-initial {
+      width: 55px;
+      height: 55px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 900;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      transition: all 0.3s ease;
+    }
+
+    .software-card:hover .plugin-initial {
+      transform: scale(1.3) translateY(-10px) rotate(-5deg);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .grid:has(.software-card:hover) .software-card:not(:hover) {
+      flex: 0.7;
+      opacity: 0.5;
+      filter: blur(0.5px);
+      transform: scale(0.96);
+    }
+
+    .software-logo {
+      width: 55px;
+      height: 55px;
+      object-fit: contain;
+      margin-bottom: 12px;
+      transition: all 0.3s ease-out;
+    }
+
+    .software-card:hover .software-logo {
+      transform: scale(1.3) translateY(-10px);
+    }
+
+    .dl-popup {
+      position: absolute;
+      bottom: -50px;
+      left: 0;
+      right: 0;
+      background: var(--cyan);
+      height: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease-in-out;
+      text-decoration: none;
+      color: #000;
+      font-weight: 800;
+      font-size: 10px;
+      letter-spacing: 1.2px;
+      opacity: 0;
+    }
+
+    .software-card:hover .dl-popup {
+      bottom: 0;
+      opacity: 1;
+    }
+
+    .software-card div {
+      transition: 0.3s;
+    }
+
+    .software-card:hover div {
+      transform: translateY(-8px);
+      color: white;
+    }
+
+    /* VIDEO SHOWCASE */
+    .video-showcase {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .main-video video {
+      width: 100%;
+      height: 600px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .video-grid-12 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+    }
+
+    .video-grid-12 video {
+      width: 100%;
+      aspect-ratio: 4/5;
+      max-height: 350px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 1px solid rgba(0, 210, 255, 0.3);
+      transform: scale(0.9);
+      opacity: 0;
+      transition: .4s;
+    }
+
+    .video-grid-12 video.active {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    .video-grid-12 video:hover {
+      transform: scale(1.05);
+      border-color: var(--cyan);
+      box-shadow: 0 0 20px rgba(0, 210, 255, 0.2);
+    }
+
+    /* VIEW FULL SHOWCASE BUTTON */
+    .showcase-footer {
+      display: flex;
+      justify-content: center;
+      margin-top: 40px;
+    }
+
+    .btn-showcase {
+      background: transparent;
+      color: var(--cyan);
+      border: 1px solid var(--cyan);
+      padding: 14px 32px;
+      border-radius: 30px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      text-decoration: none;
+    }
+
+    .btn-showcase:hover {
+      background: var(--cyan);
+      color: black;
+      box-shadow: 0 0 30px rgba(0, 210, 255, 0.4);
+      transform: translateY(-3px);
+    }
+
+    /* SOCIAL HUB */
+    .social-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 25px;
+      align-items: start;
+    }
+
+    .social-card {
+      height: 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      cursor: pointer;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      overflow: hidden;
+      position: relative;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .social-icon {
+      width: 0px;
+      height: 0px;
+      opacity: 0;
+      transition: all 0.3s ease;
+      object-fit: contain;
+    }
+
+    .social-card:hover {
+      height: 180px;
+      border-color: var(--cyan);
+      background: #111418;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    .social-card:hover .social-icon {
+      width: 80px;
+      height: 80px;
+      opacity: 1;
+      margin-bottom: 15px;
+    }
+
+    .insta:hover {
+      color: #E1306C;
+    }
+
+    .linked:hover {
+      color: #0077b5;
+    }
+
+    .tiktok:hover {
+      color: #00f2ea;
+    }
+
+    .github:hover {
+      color: #fff;
+    }
+
+    /* NEPAL SECTION */
+    .nepal {
+      background: linear-gradient(180deg, #0e1116, #050607);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 80px 20px;
+      text-align: center;
+    }
+
+    .nepal h2 {
+      font-size: 84px;
+      font-weight: 800;
+      letter-spacing: 2px;
+    }
+
+    .nepal span {
+      color: var(--cyan);
+    }
+
+    footer {
+      text-align: center;
+      padding: 100px 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    @media(max-width: 1024px) {
+      .container {
+        width: 92%;
+      }
+
+      .hero h1 {
+        font-size: 42px;
+      }
+
+      .nepal h2 {
+        font-size: 64px;
+      }
+    }
+
+    @media(max-width: 768px) {
+      .container {
+        width: 92%;
+        padding: 0 16px;
+      }
+
+      /* NAV */
+      nav {
+        flex-direction: column;
+        gap: 16px;
+        padding: 20px 0;
+      }
+
+      nav a {
+        margin: 0 10px;
+        font-size: 14px;
+      }
+
+      /* HERO */
+      .hero {
+        margin-top: 40px;
+      }
+
+      .hero h1 {
+        font-size: 36px;
+      }
+
+      .hero p {
+        font-size: 16px;
+        padding: 0 10px;
+      }
+
+      .avatar {
+        width: 160px;
+        height: 160px;
+      }
+
+      /* GRID SYSTEM */
+      .grid {
+        flex-direction: column;
+        height: auto;
+        gap: 20px;
+      }
+
+      .software-card {
+        height: auto;
+        min-height: 160px;
+        /* Taller touch targets */
+        flex: 1 !important;
+        /* Disable the flex resize logic on mobile for usability */
+        opacity: 1 !important;
+        transform: none !important;
+        filter: none !important;
+      }
+
+      .software-card:hover {
+        transform: translateY(-5px) !important;
+      }
+
+      /* VIDEO */
+      .video-grid-12 {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+
+      .main-video video {
+        height: 300px;
+      }
+
+      .video-grid-12 video {
+        max-height: none;
+        aspect-ratio: 16/9;
+      }
+
+      /* SOCIAL */
+      .social-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+
+      .social-card {
+        height: 100px;
+      }
+
+      .social-card:hover {
+        height: 120px;
+      }
+
+      /* NEPAL */
+      .nepal h2 {
+        font-size: 48px;
+      }
+
+      .nepal {
+        padding: 60px 20px;
+      }
+    }
+
+    @media(max-width: 480px) {
+      .hero h1 {
+        font-size: 32px;
+      }
+
+      .hero-buttons {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .hero-buttons button {
+        width: 100%;
+        max-width: 280px;
+        margin: 0;
+      }
+
+      .social-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .nepal h2 {
+        font-size: 36px;
+      }
+    }
+  </style>
 </head>
+
 <body>
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="logo">Bakery Delight</div>
-        <ul class="nav-links">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#menu">Menu</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
-        <div class="burger">
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
+
+  <canvas id="particleCanvas"></canvas>
+
+  <div class="container">
+
+    <nav class="reveal">
+      <strong>ANUJ KC</strong>
+      <div>
+        <a href="work.html">Hire-me</a>
+        <a href="https://linktr.ee/kcanuj" target="_blank" class="btn">Get in Touch</a>
+      </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <h1>Welcome to Bakery Delight</h1>
-        <p>Freshly baked goodness every day</p>
-        <a href="#menu" class="btn">Our Menu</a>
-    </section>
+    <div class="hero reveal">
+      <div class="avatar"><img src="anujprofile.png" alt="Profile"></div>
 
-    <!-- About Section -->
-    <section id="about" class="about">
-        <h2>About Us</h2>
-        <p>We bake with love and deliver happiness through our freshly baked cakes, breads, and pastries. Quality ingredients, traditional recipes, and a modern twist make our bakery special.</p>
-    </section>
+      <h1 style="margin-bottom: 5px;">Pixels, Codes</h1>
+      <p style="font-size: 24px; font-weight: 600; color: var(--text); margin-top: 0; margin-bottom: 20px;">
+        and a lot of <span style="color: var(--cyan);">CAFFEINE</span>
+      </p>
 
-    <!-- Menu Section -->
-    <section id="menu" class="menu">
-        <h2>Our Menu</h2>
-        <div class="menu-items">
-            <div class="item">
-                <img src="images/cake1.jpg" alt="Chocolate Cake">
-                <h3>Chocolate Cake</h3>
-                <p>Rich and moist chocolate delight.</p>
-            </div>
-            <div class="item">
-                <img src="images/croissant.jpg" alt="Croissant">
-                <h3>Croissant</h3>
-                <p>Flaky and buttery goodness.</p>
-            </div>
-            <div class="item">
-                <img src="images/bread.jpg" alt="Fresh Bread">
-                <h3>Fresh Bread</h3>
-                <p>Soft and warm daily bread.</p>
-            </div>
+      <p style="font-size: 16px; opacity: 0.8;">I crack the software, you make the art. Just don't tell the developers.
+      </p>
+
+      <div class="hero-buttons">
+        <a href="#work"><button class="primary">View Showcase</button></a>
+        <a href="https://github.com/KC-ANUJ" target="_blank"><button class="secondary">GitHub Profile</button></a>
+      </div>
+    </div>
+
+    <section>
+      <div class="section-title reveal">SOFTWARES I USE</div>
+      <div class="grid">
+        <div class="card reveal software-card">
+          <img src="davinci.webp" class="software-logo">
+          <div style="font-weight: 600;">DaVinci Resolve</div>
+          <a href="davinci.html" class="dl-popup">OPEN WORKFLOW</a>
         </div>
+
+        <div class="card reveal software-card">
+          <img src="AE.webp" class="software-logo">
+          <div style="font-weight: 600;">After Effects</div>
+          <a href="aftereffect.html" class="dl-popup">OPEN WORKFLOW</a>
+        </div>
+
+        <div class="card reveal software-card">
+          <img src="pr.webp" class="software-logo">
+          <div style="font-weight: 600;">Premiere Pro</div>
+          <a href="pr.html" class="dl-popup">OPEN WORKFLOW</a>
+        </div>
+
+        <div class="card reveal software-card">
+          <img src="blender.webp" class="software-logo">
+          <div style="font-weight: 600;">Blender</div>
+          <a href="blender.html" class="dl-popup">OPEN WORKFLOW</a>
+        </div>
+
+        <div class="card reveal software-card">
+          <img src="topaz.webp" class="software-logo">
+          <div style="font-weight: 600;">Topaz AI</div>
+          <a href="topaz.html" class="dl-popup">OPEN WORKFLOW</a>
+        </div>
+      </div>
+    </section>
+    <section>
+      <div class="section-title reveal">PREMIUM PLUGINS</div>
+      <div class="grid">
+        <div class="card reveal software-card">
+          <div class="plugin-initial" style="color: #0052ff; border: 1px solid #0052ff;">S</div>
+          <div style="font-weight: 600;">Sapphire</div>
+          <a href="plugins.html" class="dl-popup" style="background: #0052ff; color: white;">GET PLUGIN</a>
+        </div>
+
+        <div class="card reveal software-card">
+          <div class="plugin-initial" style="color: #ff6600; border: 1px solid #ff6600;">B</div>
+          <div style="font-weight: 600;">BCC</div>
+          <a href="plugins.html" class="dl-popup" style="background: #ff6600; color: white;">GET PLUGIN</a>
+        </div>
+
+        <div class="card reveal software-card">
+          <div class="plugin-initial" style="color: #ffcc00; border: 1px solid #ffcc00;">T</div>
+          <div style="font-weight: 600;">Twixtor</div>
+          <a href="plugins.html" class="dl-popup" style="background: #ffcc00; color: black;">GET PLUGIN</a>
+        </div>
+
+        <div class="card reveal software-card">
+          <div class="plugin-initial" style="color: #ff0044; border: 1px solid #ff0044;">M</div>
+          <div style="font-weight: 600;">Magic Bullet</div>
+          <a href="plugins.html" class="dl-popup" style="background: #ff0044; color: white;">GET PLUGIN</a>
+        </div>
+      </div>
+
+      <div class="showcase-footer reveal">
+        <a href="plugins.html" class="btn-showcase">GET ALL PLUGINS</a>
+      </div>
+    </section>
+    <section class="reveal video-showcase" id="work">
+      <div class="section-title">MY VIDEO SHOWCASE</div>
+      <div class="main-video">
+        <video autoplay loop muted playsinline>
+          <source src="promotion.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="video-grid-12">
+        <video autoplay loop muted playsinline>
+          <source src="insta k yo maya ho.mp4">
+        </video>
+        <video autoplay loop muted playsinline>
+          <source src="client1 done.mp4">
+        </video>
+        <video autoplay loop muted playsinline>
+          <source src="color grading.mp4">
+        </video>
+        <video autoplay loop muted playsinline>
+          <source src="done picnic.mp4">
+        </video>
+        <video autoplay loop muted playsinline>
+          <source src="final.mp4">
+        </video>
+        <video autoplay loop muted playsinline>
+          <source src="finally vayo 15 fps.mp4">
+        </video>
+        <video autoplay loop muted playsinline>
+          <source src="finally.mp4">
+        </video>
+        <video autoplay loop muted playsinline>
+          <source src="insta budi.mp4">
+        </video>
+        <video autoplay loop muted playsinline>
+          <source src="insta dhan sukyo.mp4">
+        </video>
+        <video autoplay loop muted playsinline>
+          <source src="la vayo yr aba tw.mp4">
+        </video>
+        <video autoplay loop muted playsinline>
+          <source src="st.mp4">
+        </video>
+        <video autoplay loop muted playsinline>
+          <source src="JAMESY - WAGWAN REMIX FT LIL JHOLA, RAPSTAR BABY, URGEN MOKTAN, RIGDEN NADIK - YouTube - Brave 2025-12-25 12-08-57.mp4">
+        </video>
+      </div>
+      <div class="showcase-footer reveal">
+        <a href="viewshowcase.html" target="_blank" class="btn-showcase">View Full Showcase</a>
+      </div>
     </section>
 
-    <!-- Contact Section -->
-    <section id="contact" class="contact">
-        <h2>Contact Us</h2>
-        <form id="contact-form">
-            <input type="text" placeholder="Your Name" required>
-            <input type="email" placeholder="Your Email" required>
-            <textarea placeholder="Your Message" required></textarea>
-            <button type="submit">Send Message</button>
-        </form>
-        <p id="form-message"></p>
+    <section>
+      <div class="section-title reveal">THE SOCIAL HUB</div>
+      <div class="social-grid">
+        <a href="https://www.instagram.com/kc__anuj/" target="_blank" class="card social-card reveal insta">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" class="social-icon">
+          <span>INSTAGRAM</span>
+        </a>
+        <a href="https://www.linkedin.com/in/anuj-kc-68078a353/" target="_blank" class="card social-card reveal linked">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" class="social-icon">
+          <span>LINKEDIN</span>
+        </a>
+        <a href="https://www.tiktok.com/@anuj.aep" target="_blank" class="card social-card reveal tiktok">
+          <img src="https://upload.wikimedia.org/wikipedia/en/a/a9/TikTok_logo.svg" class="social-icon">
+          <span>TIKTOK</span>
+        </a>
+        <a href="https://github.com/KC-ANUJ" target="_blank" class="card social-card reveal github">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg" class="social-icon"
+            style="filter: invert(1);">
+          <span>GITHUB</span>
+        </a>
+      </div>
     </section>
 
-    <footer>
-        <p>&copy; 2026 Bakery Delight. All rights reserved.</p>
+    <section class="nepal reveal">
+      <div class="section-title">CURRENTLY BASED IN</div>
+      <h2>NEPAL<span>.</span></h2>
+    </section>
+
+    <footer class="reveal">
+      <h2 style="color:white;margin-bottom:20px;">LET’S BUILD THE NEXT.</h2>
+      © 2026 Portfolio • Designed in Nepal
     </footer>
 
-    <script src="script.js"></script>
+  </div>
+
+  <script>
+    // SCROLL REVEAL
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add("active");
+        }
+      });
+    }, { threshold: .1 });
+    document.querySelectorAll(".reveal").forEach(el => obs.observe(el));
+
+    // VIDEO REVEAL
+    const vObs = new IntersectionObserver(entries => {
+      entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add("active"); });
+    }, { threshold: 0.2 });
+    document.querySelectorAll(".video-grid-12 video").forEach(v => vObs.observe(v));
+
+    // PARTICLES SYSTEM
+    const canvas = document.getElementById("particleCanvas");
+    const ctx = canvas.getContext("2d");
+    let w, h;
+    function res() { w = canvas.width = innerWidth; h = canvas.height = innerHeight; }
+    res(); addEventListener("resize", res);
+
+    const mouse = { x: null, y: null };
+    addEventListener("mousemove", e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+
+    const particles = [];
+    for (let i = 0; i < 200; i++)particles.push(new (class {
+      constructor() { this.x = Math.random() * w; this.y = Math.random() * h; this.vx = (Math.random() - .5) * 0.2; this.vy = (Math.random() - .5) * 0.2; this.size = Math.random() * 1.5 + .2; }
+      update() {
+        if (mouse.x) {
+          const dx = this.x - mouse.x, dy = this.y - mouse.y, dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 140) {
+            const f = (140 - dist) / 140; this.vx += (dx / dist) * f * 0.6; this.vy += (dy / dist) * f * 0.6;
+          }
+        }
+        this.vx *= 0.96; this.vy *= 0.96; this.x += this.vx; this.y += this.vy;
+        if (this.x < 0) this.x = w; if (this.x > w) this.x = 0; if (this.y < 0) this.y = h; if (this.y > h) this.y = 0;
+      }
+      draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fillStyle = "rgba(0,210,255,0.4)"; ctx.fill(); }
+    })());
+
+    function anim() { ctx.clearRect(0, 0, w, h); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(anim); }
+    anim();
+  </script>
+
 </body>
+
 </html>
